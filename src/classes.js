@@ -7,7 +7,5 @@ export class Node {
 }
 
 class Tree {
-    constructor(arr) {
-
-    }
+    constructor(arr) {}
 }
