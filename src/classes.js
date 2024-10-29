@@ -7,14 +7,30 @@ class Node {
 }
 
 export class Tree {
-    constructor(arr) {
-        this.arr = arr;
-        this.root = this.buildTree();
+    constructor(array) {
+        // Sort array and remove duplicates, then build the tree
+        const sortedArray = [...new Set(array)].sort((a, b) => {
+            return a - b;
+        });
+        this.root = this.buildTree(sortedArray);
     }
 
     // turns array into a balanced binary tree full of Node objects
-    buildTree() {
-        //return the level-0 root node
+    buildTree(array) {
+        // Base case
+        if (array.length === 0) return null;
+
+        // Find middle index
+        const mid = Math.floor(array.length / 2);
+
+        // Create a new node with the middle value
+        const node = new Node(array[mid]);
+
+        // Recursively build left and right subtrees
+        node.left = this.buildTree(array.slice(0, mid));
+        node.right = this.buildTree(array.slice(mid + 1));
+
+        return node;
     }
 
     insert(value) {}

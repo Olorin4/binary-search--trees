@@ -1,9 +1,9 @@
 import "./normalize.css";
 import "./styles.css";
-import { Node, Tree } from "./classes";
-
-const tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+import { Tree } from "./classes";
 
 document.addEventListener("DOMContentLoaded", () => {
-    tree.buildTree();
+    const arr = [3, 5, 1, 4, 2, 6, 7];
+    const tree = new Tree(arr);
+    console.log(tree.root);
 });
