@@ -45,20 +45,14 @@ export class Tree {
             if (node.leftChild === null) return node.rightChild;
             if (node.rightChild === null) return node.leftChild;
             // Node with two children
-            const successorNode = this.getSuccessorNodeOf(node.rightChild); // Find the in-order successor
+            let successorNode = node.rightChild;
+            while (successorNode.leftChild !== null) {
+                successorNode = successorNode.leftChild; // Find the smallest node in the right subtree
+            }
             node.data = successorNode.data; // Replace data with successor's data
             node.rightChild = this.delete(node.rightChild, successorNode.data); // Delete successor
         }
         return node;
-    }
-
-    // finds the in-order successor of a given node
-    getSuccessorNodeOf(currentNode) {
-        currentNode = currentNode.rightChild;
-        while (currentNode !== null && currentNode.leftChild !== null) {
-            currentNode = currentNode.leftChild;
-        }
-        return currentNode;
     }
 
     find(data, node = this.root) {
@@ -72,37 +66,96 @@ export class Tree {
     }
 
     levelOrder(callback) {
-        if (this.root === null) return; // If the tree is empty, do nothing
+        Tree.validate(callback);
         const queue = [this.root]; // Initialize the queue with the root node
         while (queue.length > 0) {
             const node = queue.shift(); // Dequeue the front node
             callback(node);
             // Enqueue the left child if it exists
-            if (node.leftChild) {
-                queue.push(node.leftChild);
-            }
+            if (node.leftChild) queue.push(node.leftChild);
             // Enqueue the right child if it exists
-            if (node.rightChild) {
-                queue.push(node.rightChild);
-            }
+            if (node.rightChild) queue.push(node.rightChild);
         }
     }
 
-    inOrder(callback) {}
-    preOrder(callback) {}
-    postOrder(callback) {}
-
-    height(node) {
-        //returns the given node’s height
+    inOrder(callback, node = this.root) {
+        Tree.validate(callback);
+        if (node === null) return;
+        this.inOrder(node.leftChild); // Visit left subtree
+        callback(node); // Visit current node
+        this.inOrder(node.rightChild); // Visit right subtree
     }
 
-    depth(node) {
-        //returns the given node’s depth
+    preOrder(callback, node = this.root) {
+        Tree.validate(callback);
+        if (node === null) return;
+        callback(node); // Visit current node
+        this.preOrder(node.leftChild); // Visit left subtree
+        this.preOrder(node.rightChild); // Visit right subtree
     }
 
-    isBalanced() {
-        //checks if the tree is balanced
+    postOrder(callback, node = this.root) {
+        Tree.validate(callback);
+        if (node === null) return;
+        this.postOrder(node.leftChild); // Visit left subtree
+        this.postOrder(node.rightChild); // Visit right subtree
+        callback(node); // Visit current node
     }
 
-    rebalance() {}
+    height(node = this.root) {
+        const result = this._calculateHeightAndBalance(node);
+        return result.height;
+    }
+
+    depth(node, current = this.root) {
+        if (node === null) return -1;
+        if (node === this.root) return 0; // If the node is the root, its depth is 0
+        // Recursive case: Search in the left or right subtree
+        if (node.data < current.data) {
+            // Go left, and increment depth by 1
+            return 1 + this.depth(node, current.leftChild);
+        } else if (node.data > current.data) {
+            // Go right, and increment depth by 1
+            return 1 + this.depth(node, current.rightChild);
+        }
+        // If neither left nor right child has a valid depth, return -1 (node not found in the tree)
+        return -1;
+    }
+
+    isBalanced(node = this.root) {
+        const result = this._calculateHeightAndBalance(node);
+        return result.balance;
+    }
+
+    rebalance() {
+        if (this.isBalanced()) return;
+        const rebalancedTree = [];
+        // Collect all node data from the tree using inOrder traversal
+        this.inOrder((node) => rebalancedTree.push(node.data));
+        // Rebuild the tree with the sorted data
+        this.root = this.buildTree(rebalancedTree);
+    }
+
+    // Static helper function to check if a valid callback is provided
+    static validate(callback) {
+        if (typeof callback !== "function") {
+            throw new Error("A callback function is required.");
+        }
+    }
+
+    // Helper function to calculate both height and balance status of a node
+    _calculateHeightAndBalance(node) {
+        if (node === null) return { height: -1, balance: true }; // Base case: null node is balanced
+        // Check balance and height of left subtree
+        const left = this._calculateHeightAndBalance(node.leftChild);
+        if (!left.balance) return { height: 0, balance: false }; // If left subtree is unbalanced, no need to check further
+        // Check balance and height of right subtree
+        const right = this._calculateHeightAndBalance(node.rightChild);
+        if (!right.balance) return { height: 0, balance: false }; // If right subtree is unbalanced, no need to check further
+        // Check if current node is balanced (difference in heights not more than one)
+        const isBalancedAtNode = Math.abs(left.height - right.height) <= 1;
+        // Return the height of the current node and its balance status
+        const height = Math.max(left.height, right.height) + 1;
+        return { height, balance: isBalancedAtNode };
+    }
 }
