@@ -12,7 +12,7 @@ const config = {
     singleQuote: false,
     quoteProps: "as-needed",
     bracketSpacing: true,
-    arrowParens: "always",
+    //arrowParens: "always",
 };
 
 export default config;

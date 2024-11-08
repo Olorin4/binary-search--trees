@@ -10,7 +10,13 @@ export default [
         rules: {
             "no-unused-vars": "warn",
             "no-undef": "error",
-            "arrow-body-style": ["error", "always"],
+            "arrow-body-style": ["error", "as-needed"],
+            // "prettier/prettier": [
+            //     "error",
+            //     {
+            //         printWidth: 80,
+            //     },
+            // ],
         },
     },
 ];
