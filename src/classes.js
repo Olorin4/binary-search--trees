@@ -35,7 +35,10 @@ export class Tree {
     }
 
     delete(data, node = this.root) {
-        if (node === null) return null;
+        if (node === null) {
+            console.error(`Error: Data ${data} not found in the tree.`);
+            return null;
+        }
         if (data < node.data) {
             node.leftChild = this.delete(data, node.leftChild);
         } else if (data > node.data) {
@@ -50,7 +53,7 @@ export class Tree {
                 successorNode = successorNode.leftChild; // Find the smallest node in the right subtree
             }
             node.data = successorNode.data; // Replace data with successor's data
-            node.rightChild = this.delete(node.rightChild, successorNode.data); // Delete successor
+            node.rightChild = this.delete(successorNode.data, node.rightChild); // Delete successor
         }
         return node;
     }
@@ -71,34 +74,32 @@ export class Tree {
         while (queue.length > 0) {
             const node = queue.shift(); // Dequeue the front node
             callback(node);
-            // Enqueue the left child if it exists
-            if (node.leftChild) queue.push(node.leftChild);
-            // Enqueue the right child if it exists
-            if (node.rightChild) queue.push(node.rightChild);
+            if (node.leftChild) queue.push(node.leftChild); //Enqueue the left child
+            if (node.rightChild) queue.push(node.rightChild); //Enqueue the right child
         }
     }
 
     inOrder(callback, node = this.root) {
         Tree.validate(callback);
         if (node === null) return;
-        this.inOrder(node.leftChild); // Visit left subtree
+        if (node.leftChild) this.inOrder(callback, node.leftChild); // Visit left subtree
         callback(node); // Visit current node
-        this.inOrder(node.rightChild); // Visit right subtree
+        if (node.rightChild) this.inOrder(callback, node.rightChild); // Visit right subtree
     }
 
     preOrder(callback, node = this.root) {
         Tree.validate(callback);
         if (node === null) return;
         callback(node); // Visit current node
-        this.preOrder(node.leftChild); // Visit left subtree
-        this.preOrder(node.rightChild); // Visit right subtree
+        if (node.leftChild) this.preOrder(callback, node.leftChild); // Visit left subtree
+        if (node.rightChild) this.preOrder(callback, node.rightChild); // Visit right subtree
     }
 
     postOrder(callback, node = this.root) {
         Tree.validate(callback);
         if (node === null) return;
-        this.postOrder(node.leftChild); // Visit left subtree
-        this.postOrder(node.rightChild); // Visit right subtree
+        if (node.leftChild) this.postOrder(callback, node.leftChild); // Visit left subtree
+        if (node.rightChild) this.postOrder(callback, node.rightChild); // Visit right subtree
         callback(node); // Visit current node
     }
 
