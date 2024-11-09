@@ -82,25 +82,25 @@ export class Tree {
     inOrder(process, node = this.root) {
         Tree.validate(process);
         if (node === null) return;
-        if (node.leftChild) this.inOrder(process, node.leftChild); // Visit left subtree
-        process(node); // Visit current node
-        if (node.rightChild) this.inOrder(process, node.rightChild); // Visit right subtree
+        if (node.leftChild) this.inOrder(process, node.leftChild);
+        process(node);
+        if (node.rightChild) this.inOrder(process, node.rightChild);
     }
 
     preOrder(process, node = this.root) {
         Tree.validate(process);
         if (node === null) return;
-        process(node); // Visit current node
-        if (node.leftChild) this.preOrder(process, node.leftChild); // Visit left subtree
-        if (node.rightChild) this.preOrder(process, node.rightChild); // Visit right subtree
+        process(node);
+        if (node.leftChild) this.preOrder(process, node.leftChild);
+        if (node.rightChild) this.preOrder(process, node.rightChild);
     }
 
     postOrder(process, node = this.root) {
         Tree.validate(process);
         if (node === null) return;
-        if (node.leftChild) this.postOrder(process, node.leftChild); // Visit left subtree
-        if (node.rightChild) this.postOrder(process, node.rightChild); // Visit right subtree
-        process(node); // Visit current node
+        if (node.leftChild) this.postOrder(process, node.leftChild);
+        if (node.rightChild) this.postOrder(process, node.rightChild);
+        process(node);
     }
 
     height(node = this.root) {
