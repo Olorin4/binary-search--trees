@@ -68,39 +68,39 @@ export class Tree {
         return node;
     }
 
-    levelOrder(callback) {
-        Tree.validate(callback);
+    levelOrder(process) {
+        Tree.validate(process);
         const queue = [this.root]; // Initialize the queue with the root node
         while (queue.length > 0) {
             const node = queue.shift(); // Dequeue the front node
-            callback(node);
+            process(node);
             if (node.leftChild) queue.push(node.leftChild); //Enqueue the left child
             if (node.rightChild) queue.push(node.rightChild); //Enqueue the right child
         }
     }
 
-    inOrder(callback, node = this.root) {
-        Tree.validate(callback);
+    inOrder(process, node = this.root) {
+        Tree.validate(process);
         if (node === null) return;
-        if (node.leftChild) this.inOrder(callback, node.leftChild); // Visit left subtree
-        callback(node); // Visit current node
-        if (node.rightChild) this.inOrder(callback, node.rightChild); // Visit right subtree
+        if (node.leftChild) this.inOrder(process, node.leftChild); // Visit left subtree
+        process(node); // Visit current node
+        if (node.rightChild) this.inOrder(process, node.rightChild); // Visit right subtree
     }
 
-    preOrder(callback, node = this.root) {
-        Tree.validate(callback);
+    preOrder(process, node = this.root) {
+        Tree.validate(process);
         if (node === null) return;
-        callback(node); // Visit current node
-        if (node.leftChild) this.preOrder(callback, node.leftChild); // Visit left subtree
-        if (node.rightChild) this.preOrder(callback, node.rightChild); // Visit right subtree
+        process(node); // Visit current node
+        if (node.leftChild) this.preOrder(process, node.leftChild); // Visit left subtree
+        if (node.rightChild) this.preOrder(process, node.rightChild); // Visit right subtree
     }
 
-    postOrder(callback, node = this.root) {
-        Tree.validate(callback);
+    postOrder(process, node = this.root) {
+        Tree.validate(process);
         if (node === null) return;
-        if (node.leftChild) this.postOrder(callback, node.leftChild); // Visit left subtree
-        if (node.rightChild) this.postOrder(callback, node.rightChild); // Visit right subtree
-        callback(node); // Visit current node
+        if (node.leftChild) this.postOrder(process, node.leftChild); // Visit left subtree
+        if (node.rightChild) this.postOrder(process, node.rightChild); // Visit right subtree
+        process(node); // Visit current node
     }
 
     height(node = this.root) {
@@ -138,9 +138,9 @@ export class Tree {
     }
 
     // Static helper function to check if a valid callback is provided
-    static validate(callback) {
-        if (typeof callback !== "function") {
-            throw new Error("A callback function is required.");
+    static validate(process) {
+        if (typeof process !== "function") {
+            throw new Error("A process function is required.");
         }
     }
 
